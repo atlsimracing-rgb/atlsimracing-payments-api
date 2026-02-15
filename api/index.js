@@ -4,10 +4,12 @@ import { Client } from "square";
 const app = express();
 app.use(express.json());
 
+// Root route
 app.get("/", (req, res) => {
   res.send("Atlanta Sim Racing Payments API Running ✅");
 });
 
+// Health check
 app.get("/healthz", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
@@ -17,7 +19,7 @@ app.get("/square-test", async (req, res) => {
   try {
     const client = new Client({
       accessToken: process.env.SQUARE_ACCESS_TOKEN,
-      environment: "sandbox"
+      environment: "sandbox",
     });
 
     const response = await client.locationsApi.listLocations();
@@ -27,4 +29,10 @@ app.get("/square-test", async (req, res) => {
   }
 });
 
-export default app;
+/*
+🔥 THIS PART IS CRITICAL FOR VERCEL
+*/
+export default function handler(req, res) {
+  return app(req, res);
+}
+
